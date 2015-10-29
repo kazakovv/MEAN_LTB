@@ -1,0 +1,1 @@
+mongod -dbpath C:\Users\Victor\OneDrive\Programming\AngularJS\MEAN-LittleBabyDiary\MongoDB-Database

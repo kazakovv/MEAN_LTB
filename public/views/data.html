@@ -1,0 +1,35 @@
+
+
+    <header-bar></header-bar>
+
+    <div class="page-header">
+        <h1>Record the progress of your baby</h1>
+    </div>
+    <div class="container-fluid" data-ng-init="init()">
+        <table class="table table-stripped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Growth Record</th>
+                <th>Development Record</th>
+                <th>Fever Record</th>
+            </tr>
+            <tbody>
+                <tr ng-repeat="kid in kids">
+                    <td>{{kid.name}}</td>
+                    <!-- Growth record-->
+                    <td>
+                        <a href="" ng-click="updateBaby(kid,'GrowthRecord')">Update</a>
+                    </td>
+                    <!-- Development Record-->
+                    <td>
+                        <a href="" ng-click="updateBaby(kid,'DevelopmentRecord')">Update</a>
+                    </td>
+                    <td>
+                        <a href="" ng-click="updateBaby(kid,'FeverRecord')">Update</a>
+                    </td>
+                </tr>
+            </tbody>
+            </thead>
+        </table>
+    </div>

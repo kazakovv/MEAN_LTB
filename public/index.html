@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>LittleBabyDiary</title>
+
+    <!-- IMPORTS -->
+    <!-- jQuery-->
+    <script src="scripts/js/jquery.js"></script>
+
+    <!-- angular -->
+    <script src="scripts/js/angular.js"></script>
+    <script src="scripts/js/angular-ui-router.js"></script>
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="scripts/css/bootstrap.css">
+    <script src="scripts/js/bootstrap.js"></script>
+    <script src="scripts/js/ui-bootstrap.js"></script>
+    <script src="scripts/js/ui-bootstrap-tpls.js"></script>
+
+    <!-- CSS -->
+    <link href="stylesheets/login.css" rel="stylesheet" />
+    <link href="stylesheets/signup.css" rel="stylesheet"/>
+    <link href="stylesheets/header.css" rel="stylesheet"/>
+    <link href="stylesheets/editbaby.css" rel="stylesheet"/>
+
+
+    <!-- other libs -->
+    <!-- moment lib for manipulating dates -->
+    <script src="scripts/js/moment.js"></script>
+
+    <!-- imports for nvD3 for chars-->
+    <script>document.write('<base href="' + document.location + '" />');</script>
+    <link rel="stylesheet" href="scripts/css/nv.d3.css"/>
+    <script src="scripts/js/d3.js"></script>
+    <script src="scripts/js/nv.d3.js"></script>
+    <script src="scripts/js/angular-nvd3.js"></script>
+    <!-- dowloaded locally to make modifications
+    <script src="https://rawgit.com/krispo/angular-nvd3/v0.1.1/dist/angular-nvd3.js"></script>
+    -->
+    <!-- import for exditable - edit values in tables-->
+    <link href="scripts/css/xeditable.css" rel="stylesheet">
+    <script src="scripts/js/xeditable.js"></script>
+
+</head>
+
+<body ng-app="LittleBabyDiary">
+    <!-- Main view that changes -->
+
+
+        <ui-view></ui-view>
+
+
+
+    <!-- IMPORTS -->
+    <!-- modules-->
+    <script src="js/angularApp.js"></script>
+
+    <!-- controllers -->
+    <script src="js/controllers/LogInController.js"></script>
+    <script src="js/controllers/SignUpController.js"></script>
+    <script src="js/controllers/DataController.js"></script>
+    <script src="js/controllers/DashboardController.js"></script>
+    <script src="js/controllers/GrowthRecordController.js"></script>
+    <script src="js/controllers/DevelopmentRecordController.js"></script>
+    <script src="js/controllers/CreateKidsController.js"></script>
+    <script src="js/controllers/FeverRecordController.js"></script>
+    <script src="js/controllers/MainController.js"></script>
+    <!-- directives -->
+    <script src="js/directives/header.js"></script>
+    <!-- services -->
+    <script src="js/services/PassObject.js"></script>
+    <script src="js/services/GrowthTables.js"></script>
+    <script src="js/services/GrowthTablesData.js"></script>
+    <script src="js/services/MathFunctions.js"></script>
+    <script src="js/services/apiServerRequests.js"></script>
+
+</body>
+</html>

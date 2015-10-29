@@ -1,0 +1,61 @@
+
+<header-bar></header-bar>
+
+<div class="page-header">
+    <h1>List of kids</h1>
+</div>
+
+<div class="container-fluid">
+    <table class="table table-bordered table-hover table-condensed" >
+        <tr style="font-weight: bold">
+            <td style="width:35%">Baby Name</td>
+            <td style="width:20%">Birthdate</td>
+            <td style="width:20%">Sex</td>
+            <td style="width:25%">Edit</td>
+        </tr>
+        <tr ng-repeat="kid in kids">
+            <td>
+                <!-- editable name  -->
+                <span editable-text="kid.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)"  e-required>
+                  {{ kid.name || 'empty' }}
+                </span>
+            </td>
+            <td>
+                <!-- editable birthdate  -->
+            <span editable-date="kid.birthdate" e-name="birthdate" e-form="rowform" onbeforesave="checkDate($data)" e-required>
+              {{ kid.birthdate | date}}
+            </span>
+            </td>
+            <td>
+                <!-- editable select -->
+            <span editable-select="kid.boy_girl" e-name="boy_girl"  e-form="rowform"  e-ng-options="s.value as s.text for s in sexBaby">
+              {{ showSex(kid) }}
+            </span>
+            </td>
+            <td style="white-space: nowrap">
+                <!-- form -->
+                <form editable-form name="rowform"
+                      ng-show="rowform.$visible"
+                      onbeforesave="checkName($data)"
+                      onbeforesave="checkDate($data)"
+                      onaftersave="saveKid($index)"
+                      class="form-buttons form-inline"
+                      shown="babyObject == kid"
+                      novalidate>
+                    <button type="submit" ng-disabled="rowform.$waiting"   class="btn btn-primary">
+                        save
+                    </button>
+                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                        cancel
+                    </button>
+                </form>
+                <div class="buttons" ng-show="!rowform.$visible">
+                    <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                    <button class="btn btn-danger" ng-click="removeKid($index)">del</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <button class="btn btn-default" ng-click="addBaby()">Add baby</button>
+</div> <!-- end of container fluid main container-->

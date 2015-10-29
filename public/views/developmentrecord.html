@@ -1,0 +1,73 @@
+<header-bar></header-bar>
+
+<div class="page-header">
+    <h1>Development Record</h1>
+    <h2>{{baby.name}}</h2>
+</div>
+
+<div class="contaier-fluid">
+    <table class="table table-bordered table-hover table-condensed" ng-init="init()">
+        <tr style="font-weight: bold">
+            <td style="width:25%">Milestone</td>
+            <td style="width:20%">Date</td>
+            <td style="width:10%">Age</td>
+            <td style="width:25%">Notes</td>
+            <td style="width:20%">Edit</td>
+        </tr>
+        <tr ng-repeat="milestone in milestones track by $index">
+            <td>
+                <span editable-select="milestone.milestone"
+                      e-name="milestone" e-form="rowform"
+                      e-ng-options="s.value as s.text for s in milestoneOptions">
+                      {{ showMilestone(milestone) }}
+                </span>
+            </td>
+            <td>
+              <span>
+                   <span editable-bsdate="milestone.dateMilestone"
+                         onbeforesave="checkDate($data)"
+                         e-form="rowform"
+                         e-datepicker-popup="dd-MM-yyyy">
+                      {{ (milestone.dateMilestone | date:"dd/MM/yyyy") || 'soon' }}
+                  </span>
+              </span>
+            </td>
+            <td>
+              <span>
+                  {{calculateAgeMilestoneAchieved(milestone.date)}}
+              </span>
+            </td>
+            <td>
+                  <span editable-textarea="milestone.notes"
+                        e-rows="7"
+                        e-form="rowform"
+                        e-cols="40">
+                        {{ milestone.notes || 'Enter your notes' }}
+                  </span>
+            </td>
+            <td style="white-space: nowrap">
+                <!-- form -->
+                <form editable-form name="rowform"
+                      ng-show="rowform.$visible"
+                      class="form-buttons form-inline"
+                      shown="milestoneObject == milestone"
+                      onbeforesave="checkDate($data)"
+                      novalidate>
+                    <button type="submit" ng-disabled="rowform.$waiting"   class="btn btn-primary">
+                        save
+                    </button>
+                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                        cancel
+                    </button>
+                </form>
+                <div class="buttons" ng-show="!rowform.$visible">
+                    <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                    <button class="btn btn-danger" ng-click="removeMilestone($index)">del</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <button class="btn btn-default" ng-click="addMilestone()">Add milestone</button>
+    <button class="btn btn-default" ng-click="saveMilestones()">Save</button>
+
+</div>

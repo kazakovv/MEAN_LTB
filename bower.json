@@ -1,0 +1,23 @@
+{
+  "name": "MEAN-LittleBabyDiary",
+  "description": "",
+  "main": "",
+  "authors": [
+    "kazakovv <kazakov.vcictor@gmail.com>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-nvd3": "~1.0.2",
+    "angular-xeditable": "~0.1.9",
+    "jquery": "~2.1.4"
+  }
+}
