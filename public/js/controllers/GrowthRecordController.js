@@ -2,8 +2,8 @@
  * Created by Victor on 10/1/2015.
  */
 
-app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growthTables',
-    function($scope,$state, passObject, growthTables){
+app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growthTables', 'apiServerRequests',
+    function($scope,$state, passObject, growthTables, apiServerRequests ){
 
         //get baby object passed from the passBaby service
         var babyObject = passObject.getBabyObject();
@@ -16,16 +16,25 @@ app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growt
             if(typeof babyObject == "undefined"){
                 $state.go('login');
             } else {
-
                 $scope.baby = babyObject;
-                if(!! babyObject.growthRecords  ){
-                    $scope.growthRecords = babyObject.growthRecords;
-                    $scope.growthRecords.sort(sortByDate);
-                } else{
-                    $scope.growthRecords = [];
-                }
 
-            }
+                    //get growth records for a baby object
+                    apiServerRequests.getGrowthRecordsForBaby(babyObject._id)
+                        .success(function(data){
+                            $scope.growthRecords = data;
+                            $scope.growthRecords.sort(sortByDate);
+
+                            //reformat the dates
+                            for(i=0; i < $scope.growthRecords.length; i ++){
+                                $scope.growthRecords[i].dateGrowth = new Date($scope.growthRecords[i].dateGrowth);
+                            }
+                    })
+                        .error(function(err){
+                           console.log('error getting growth records from database '+err);
+                    });
+
+
+            } //end of check if babyObject is undefined
 
         };
 
@@ -42,7 +51,7 @@ app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growt
             var percentile;
             //return percentile based on boy/girl and weight, height or head circumference
 
-            var babySex = babyObject.sex; //1 male, 2 female
+            var babySex = babyObject.boy_girl; //1 male, 2 female
             switch (percentileToCalculate){
                 case "Weight":
                     if(babySex == 1){
@@ -76,15 +85,27 @@ app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growt
             var itemToRemove = $scope.growthRecords[index];
             $scope.growthRecords.splice(index, 1);
 
-            //remove from backendless
-            var growthRecordTable = backendlessClasses.growthRecords();
-            var growthRecord = Backendless.Persistence.of(growthRecordTable);
-            growthRecord.remove(itemToRemove);
+            //remove from database
+            apiServerRequests.deleteGrowthRecord(itemToRemove._id)
+                .success(function(data){
+                    console.log('successfully deleted growth record');
+                })
+                .error(function(err){
+                   console.log('error deleting growth record' + err);
+                });
+
 
         };
         $scope.addValue = function(){
-            var growth = backendlessClasses.growthRecords();
-            $scope.newValue = new growth;
+
+
+            $scope.newValue = {
+                dateGrowth: new Date(),
+                head_cfr: '',
+                height: '',
+                weight: '',
+                baby_id: babyObject._id
+            };
             $scope.growthRecords.push($scope.newValue);
         };
 
@@ -92,28 +113,37 @@ app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growt
           $scope.growthRecords.sort(sortByDate);
         };
 
-        $scope.saveProperties = function(){
+        $scope.saveGrowthRecord = function(index){
+            var growthRecordObject = $scope.growthRecords[index];
+            if( ! growthRecordObject._id){
+                //if the growth record object has no id this means that the this is a new object
+                // that has not been uploaded to the server
 
+                //upload to the server
 
+                apiServerRequests.createGrowthRecord(growthRecordObject)
+                    .success(function(data){
+                        //update the growth records array locally
+                        $scope.growthRecords[index] = data;
+                    })
+                    .error(function(err){
+                        console.log('Error uploading growth record ' +err);
 
-            //****** upload in backendless *****
-
-            //get baby table from backendlessClasses service
-            var Baby = backendlessClasses.babyTable();
-            babyObject.growthRecords = $scope.growthRecords;
-            babyObject = angular.copy(babyObject); //remove $$hashkey added by angular
-            var saved = Backendless.Persistence.of( Baby ).save( babyObject, new Backendless.Async( savedBaby, gotError ));
-            function gotError( err ) // see more on error handling
-            {
-                console.log( "error message - " + err.message );
-                console.log( "error code - " + err.statusCode );
+                    });
+            //end of check if this is a new growth record object that has not been uploaded to the server
+            } else{
+            //if growth record object has an id this is an existing entry and we only update the existing object in the database
+                apiServerRequests.updateGrowthRecord(growthRecordObject)
+                    .success(function(data){
+                        alert('Successfully updated');
+                    })
+                    .error(function(err){
+                        console.log('Error updating growth record ' +err);
+                    })
             }
-            function savedBaby(baby) {
-                alert("The data was saved");
-            }
-            // *** end of upload in backendless ***
-
         };
+
+
 
         function sortByDate(a, b) {
             return new Date(a.dateGrowth).getTime() - new Date(b.dateGrowth).getTime();

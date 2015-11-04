@@ -63,7 +63,8 @@ router.route('/growthRecords/:id')
                     return res.send(err);
                 }
                 return res.json(growth);
-            }); //end of save post
+
+            }); //end of save growth record
         }); //end of find by id
     })//end of put
     .delete(function(req, res, next) {

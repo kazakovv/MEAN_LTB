@@ -43,10 +43,11 @@
 
                 <!-- editable date  -->
             <td>
-                <span editable-bsdate="record.dateGrowth"
+                <span editable-date="record.dateGrowth"
                       e-name="dateGrowth"
                       e-form="enterProgressForm"
                       onbeforesave="checkDate($data)"
+                      onaftersave="saveGrowthRecord($index)"
                       e-required>
                   {{ record.dateGrowth | date }}
                 </span>
@@ -88,12 +89,12 @@
                 <!-- editable head circumference  -->
             <td>
                 <div class="col-sm-6">
-                    <span editable-number="record.cfr"
+                    <span editable-number="record.head_cfr"
                           e-name="value"
                           e-form="enterProgressForm"
                           onbeforesave="checkCfr($data)"
                           e-required>
-                      {{ record.cfr | number }}
+                      {{ record.head_cfr | number }}
                     </span>
                 </div>
                 <div class="col-sm-6">
@@ -137,5 +138,4 @@
     </table>
 
     <button class="btn btn-default" ng-click="addValue()">Add value</button>
-    <button class="btn btn-default" ng-click="saveProperties()">Save</button>
 </div><!-- end of main div with container fluid-->

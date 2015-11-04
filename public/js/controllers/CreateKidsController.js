@@ -127,7 +127,7 @@ app.controller('CreateKidsController', ['$scope', '$state', '$filter', '$window'
             var babyObject = $scope.kids[index];
             babyObject = angular.copy(babyObject);
             if(! babyObject._id){
-                //if the baby object hs no id this means that the this is a new baby that has not been uploaded to the server
+                //if the baby object has no id this means that the this is a new baby that has not been uploaded to the server
                 apiServerRequests.uploadBaby(babyObject)
                     .success(function(data){
                         $scope.kids[index] = data; //change the kids array locally
