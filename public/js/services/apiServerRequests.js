@@ -45,7 +45,7 @@ app.factory('apiServerRequests', function ($http) {
     };
 
     factory.updateGrowthRecord = function(growthRecord) {
-        return $http.put('api/GrowthRecords/growthRecords/ ' + growthRecord._id, growthRecord);
+        return $http.put('api/GrowthRecords/growthRecords/' + growthRecord._id, growthRecord);
     };
 
      return factory;
