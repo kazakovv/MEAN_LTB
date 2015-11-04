@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="02735c36-54fc-4a91-a297-74953a2be171" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/controllers/DataController.js" afterPath="$PROJECT_DIR$/public/js/controllers/DataController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/controllers/GrowthRecordController.js" afterPath="$PROJECT_DIR$/public/js/controllers/GrowthRecordController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="02735c36-54fc-4a91-a297-74953a2be171" name="Default" comment="" />
     <ignored path="MEAN-LittleBabyDiary.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -604,12 +599,12 @@
       <workItem from="1446065159918" duration="11322000" />
       <workItem from="1446149467354" duration="6888000" />
       <workItem from="1446159061233" duration="133000" />
-      <workItem from="1446663838362" duration="2648000" />
+      <workItem from="1446663838362" duration="2991000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="77792000" />
+    <option name="totallyTimeSpent" value="78135000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="0" />
