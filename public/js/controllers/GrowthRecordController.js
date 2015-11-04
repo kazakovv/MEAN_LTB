@@ -2,11 +2,11 @@
  * Created by Victor on 10/1/2015.
  */
 
-app.controller('GrowthRecordController',['$scope', '$state','passBaby', 'backendlessClasses', 'growthTables',
-    function($scope,$state,passBaby, backendlessClasses, growthTables){
+app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growthTables',
+    function($scope,$state, passObject, growthTables){
 
         //get baby object passed from the passBaby service
-        var babyObject = passBaby.getBabyObject();
+        var babyObject = passObject.getBabyObject();
 
         var currentUser;
 
@@ -31,7 +31,7 @@ app.controller('GrowthRecordController',['$scope', '$state','passBaby', 'backend
 
         $scope.calculatePercentile = function(record,percentileToCalculate){
             //check if this is a new row and exit if yes
-            if(!record.dateGrowth) {
+            if(! record.dateGrowth) {
                 return;
             }
             var birthDate = new Date($scope.baby.birthdate);

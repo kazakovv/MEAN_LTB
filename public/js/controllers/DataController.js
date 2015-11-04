@@ -1,29 +1,35 @@
 /**
  * Created by Victor on 9/12/2015.
  */
-app.controller('DataController',['$scope', '$state', 'passBaby',function($scope, $state, passBaby){
+app.controller('DataController',['$scope', '$state', 'passObject','apiServerRequests',
+    function($scope, $state, passObject, apiServerRequests){
 
     $scope.init = function () {
 
         //find kids of current user
         var currentUser;
 
-        if(Backendless.UserService.getCurrentUser() != null){
-            currentUser = Backendless.UserService.getCurrentUser();
-            $scope.kids = currentUser.kids;
+        if(passObject.getCurrentUser() != null){
+            currentUser = passObject.getCurrentUser();
 
+            //get the kids of the current user
+            apiServerRequests.getKidsForParent(currentUser._id)
+                .success(function(data){
+                    $scope.kids = data;
+                })
+                .error(function(err){
+                    console.log('Error downloading kids for user '+err);
+                });
         } else {
             //redirect to login screen
             $state.go('login');
         }
-
-
     };
 
     $scope.updateBaby = function(baby,pageToForward){
 
         //pass baby object via service
-        passBaby.setBabyObject(baby);
+        passObject.setBabyObject(baby);
         switch (pageToForward){
             case 'GrowthRecord':
                 $state.go('growthrecord');
