@@ -18,9 +18,10 @@
         <tr ng-repeat="fever in fevers track by $index">
             <td>
 
-                <span editable-bsdate="fever.dateFever"
+                <span editable-date="fever.dateFever"
                       e-name="date" e-form="rowform"
                       onbeforesave="checkDate($data)"
+                      onaftersave="saveFeverRecord($index)"
                       e-required>
                   {{ fever.dateFever | date:'dd-MM-yyyy' }}
                 </span>
@@ -28,7 +29,7 @@
             </td>
 
             <td>
-                <span editable-bstime="fever.timeFever"
+                <span editable-time="fever.timeFever"
                       e-name="time" e-form="rowform"
                       e-show-meridian="false"
                       e-minute-step="10"
@@ -86,7 +87,6 @@
     </table>
 
     <button class="btn btn-default" ng-click="addFever()">Add fever record</button>
-    <button class="btn btn-default" ng-click="saveFeverRecord()">Save</button>
 
 
 </div> <!-- end of main div-->

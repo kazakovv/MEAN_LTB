@@ -120,11 +120,15 @@ app.controller('DevelopmentRecordController',['$scope', '$state', '$filter','pas
         };
         $scope.removeMilestone = function(index){
             var itemToRemove = $scope.milestones[index];
-            $scope.milestones.splice(index, 1);
-            //remove from Backendless
-            var milestonesRecordTable = backendlessClasses.developmentRecords();
-            var milestoneRecord = Backendless.Persistence.of(milestonesRecordTable);
-            milestoneRecord.remove(itemToRemove);
+            //remove from the database
+           apiServerRequests.deleteMilestone(itemToRemove)
+               .success(function(data){
+                   //remove locally as well
+                   $scope.milestones.splice(index, 1);
+               })
+               .error(function(err){
+                  console.log('Error deleting milestone from database' +err);
+               });
 
         };
         //method used for dropdown menu in form

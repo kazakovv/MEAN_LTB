@@ -57,7 +57,30 @@ app.factory('apiServerRequests', function ($http) {
       return $http.post('api/DevelopmentRecords/developmentRecords', milestone);
     };
     factory.updateMilestone = function(milestone){
-        return $http.put('api/DevelopmentRecords/developmentRecords/' + milestone._id, milestone);
+        return $http.put('api/DevelopmentRecords/DevelopmentRecords/' + milestone._id, milestone);
+    };
+    factory.deleteMilestone = function(milestone){
+        return $http.delete('api/DevelopmentRecords/DevelopmentRecords/' + milestone._id);
+    };
+
+    /* FEVER RECORDS */
+    factory.loadFeverRecords = function(babyId){
+        return $http.get('api/FeverRecords/babyFeverRecords/'+ babyId);
+    };
+
+    factory.deleteFeverRecord = function(feverRecord){
+        return $http.delete('api/FeverRecords/feverRecords/' + feverRecord._id);
+    };
+
+    factory.uploadFeverRecord = function(feverRecord){
+        return $http.post('api/FeverRecords/feverRecords', feverRecord);
+    };
+
+    factory.updateFeverRecord = function(feverRecord){
+        return $http.put('api/FeverRecords/feverRecords/' + feverRecord._id, feverRecord)
+    };
+    factory.deleteFeverRecord = function(feverRecord){
+        return $http.delete('api/FeverRecords/feverRecords/' + feverRecord._id);
     };
      return factory;
 
