@@ -71,9 +71,9 @@ app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growt
                     break;
                 case "HeadCircumference":
                     if(babySex == 1){
-                        percentile = growthTables.percentileBoysHeadCircumference(monthsSinceBirth, record.cfr);
+                        percentile = growthTables.percentileBoysHeadCircumference(monthsSinceBirth, record.head_cfr);
                     } else {
-                        percentile = growthTables.percentileGirlsHeadCircumference(monthsSinceBirth, record.cfr);
+                        percentile = growthTables.percentileGirlsHeadCircumference(monthsSinceBirth, record.head_cfr);
                     }
                     return percentile;
                     break;
@@ -113,7 +113,7 @@ app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growt
           $scope.growthRecords.sort(sortByDate);
         };
 
-        $scope.saveGrowthRecord = function(index){
+        $scope.saveGrowthRecord = function(index) {
             var growthRecordObject = $scope.growthRecords[index];
             if( ! growthRecordObject._id){
                 //if the growth record object has no id this means that the this is a new object

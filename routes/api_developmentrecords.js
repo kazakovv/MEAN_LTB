@@ -11,7 +11,7 @@ router.route('/developmentRecords')
         var developmentRecord = new DevelopmentRecords();
         developmentRecord.dateMilestone = req.body.dateMilestone;
         developmentRecord.milestone = req.body.milestone;
-        developmentRecord.note = req.body.note;
+        developmentRecord.notes = req.body.notes;
         developmentRecord.baby_id = req.body.baby_id;
 
 
@@ -54,7 +54,7 @@ router.route('/developmentRecords/:id')
             }
             developmentRecord.dateMilestone = req.body.dateMilestone;
             developmentRecord.milestone = req.body.milestone;
-            developmentRecord.note = req.body.note;
+            developmentRecord.notes = req.body.notes;
             developmentRecord.baby_id = req.body.baby_id;
             developmentRecord.save(function(err, development){
                 if(err){

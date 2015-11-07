@@ -42,7 +42,7 @@ var feverRecords = new mongoose.Schema({
 var developmentRecords = new mongoose.Schema({
     dateMilestone: Date,
     milestone: Number,
-    note: String,
+    notes: String,
     baby_id: { type: Schema.Types.ObjectId, ref: 'Babies' }
 });
 

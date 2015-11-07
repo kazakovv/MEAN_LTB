@@ -24,17 +24,17 @@
             </td>
             <td>
               <span>
-                   <span editable-bsdate="milestone.dateMilestone"
+                   <span editable-date="milestone.dateMilestone"
                          onbeforesave="checkDate($data)"
-                         e-form="rowform"
-                         e-datepicker-popup="dd-MM-yyyy">
+                         onaftersave="saveMilestone($index)"
+                         e-form="rowform">
                       {{ (milestone.dateMilestone | date:"dd/MM/yyyy") || 'soon' }}
                   </span>
               </span>
             </td>
             <td>
               <span>
-                  {{calculateAgeMilestoneAchieved(milestone.date)}}
+                  {{calculateAgeMilestoneAchieved(milestone.dateMilestone)}}
               </span>
             </td>
             <td>
@@ -68,6 +68,5 @@
         </tr>
     </table>
     <button class="btn btn-default" ng-click="addMilestone()">Add milestone</button>
-    <button class="btn btn-default" ng-click="saveMilestones()">Save</button>
 
 </div>

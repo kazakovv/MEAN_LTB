@@ -2,32 +2,36 @@
  * Created by Victor on 10/3/2015.
  */
 
-app.controller('DevelopmentRecordController',['$scope', '$state', '$filter','passBaby', 'backendlessClasses',
-    function($scope,$state,$filter,passBaby, backendlessClasses){
+app.controller('DevelopmentRecordController',['$scope', '$state', '$filter','passObject', 'apiServerRequests',
+    function($scope,$state,$filter,passObject, apiServerRequests){
+        //helper function for reformatting the dates of the milestones
+        var reformatDatesOfMilestones = function(){
+            for(i=0; i < $scope.milestones.length; i++){
+                //if the date is not empty reformat it
+                if(!! $scope.milestones[i].dateMilestone){
+                    $scope.milestones[i].dateMilestone = new Date( $scope.milestones[i].dateMilestone );
 
-        $scope.baby = passBaby.getBabyObject();
+                }//end of if statement
+            }//end of reformat dates for loop
+        };//end of helper function for reformatting the dates of the milestones
+
+        $scope.baby = passObject.getBabyObject();
 
         $scope.init = function(){
           if(typeof $scope.baby == 'undefined'){
               $state.go('login');
           }  else {
               //Load milestones if they exists
-              if(!! $scope.baby.milestones){
-                  $scope.milestones = $scope.baby.milestones;
-                  //reformat dates
-                  /*
-                  for(i=0; i < $scope.milestones.length; i++){
-                      //if the date is not empty reformat it
-                      if(!! $scope.milestones[i].date){
-                      $scope.milestones[i].date = new Date( $scope.milestones[i].date );
-                      }
-                  }
-                  */
-              } else {
-                  //if no milestones were saved use the empty array
-                  $scope.milestones = [];
+              apiServerRequests.loadMilestones($scope.baby._id)
+                  .success(function(data){
+                      $scope.milestones = data;
+                      reformatDatesOfMilestones();
 
-              }
+                  })
+                  .error(function (err) {
+                      console.log('Error loading milestones '+err);
+                  });
+
           }
         };
 
@@ -40,8 +44,13 @@ app.controller('DevelopmentRecordController',['$scope', '$state', '$filter','pas
             }
         };
 
+
+
         $scope.calculateAgeMilestoneAchieved = function(dateMilestoneAchieved){
+            //reformat the date
+            dateMilestoneAchieved = new Date(dateMilestoneAchieved);
             if(!! dateMilestoneAchieved){
+
                 var birthDate = new Date($scope.baby.birthdate);
                 var day = 1000 * 3600 * 24;
 
@@ -55,31 +64,55 @@ app.controller('DevelopmentRecordController',['$scope', '$state', '$filter','pas
             } //end of check if dateMilestoneAchieved is not empty
         };
 
-        $scope.saveMilestones = function(){
+        $scope.saveMilestone = function(index){
 
 
-            //****** upload in backendless *****
+            var milestoneObject = $scope.milestones[index];
+            //check if milestone has id.
+            // If it has id this means that it has already been saved in the DB and we need to update it only
+            if( ! milestoneObject._id){
+                //if the milestone  object has no id this means that the this is a new object
+                // that has not been uploaded to the server
 
-            //get baby table from backendlessClasses service
-            var Baby = backendlessClasses.babyTable();
-            $scope.baby.milestones = $scope.milestones;
-            $scope.baby = angular.copy($scope.baby); //remove $$hashkey added by angular
-            var saved = Backendless.Persistence.of( Baby ).save( $scope.baby, new Backendless.Async( savedBaby, gotError ));
-            function gotError( err ) // see more on error handling
-            {
-                console.log( "error message - " + err.message );
-                console.log( "error code - " + err.statusCode );
+                //upload to the server
+
+                apiServerRequests.uploadMilestone(milestoneObject)
+                    .success(function(data){
+                        //update the growth records array locally
+
+                        //reformat the date
+                        data.dateMilestone = new Date(data.dateMilestone);
+                        $scope.milestones[index] = data;
+                        alert('Successfully saved');
+                    })
+                    .error(function(err){
+                        console.log('Error uploading milestone ' +err);
+
+                    });
+                //end of check if this is a new growth record object that has not been uploaded to the server
+            } else{
+                //if growth record object has an id this is an existing entry and we only update the existing object in the database
+                apiServerRequests.updateMilestone(milestoneObject)
+                    .success(function(data){
+                        //reformat the date
+                        data.dateMilestone = new Date(data.dateMilestone);
+                        $scope.milestones[index] = data;
+                        alert('Successfully updated');
+                    })
+                    .error(function(err){
+                        console.log('Error updating milestone record ' +err);
+                    })
             }
-            function savedBaby(baby) {
-                alert("The milestones were saved");
-            }
-            // *** end of upload in backendless ***
-
         };
 
         $scope.addMilestone = function () {
-            var milestone =  backendlessClasses.developmentRecords();
-            $scope.milestoneObject  = new milestone;
+
+            $scope.milestoneObject  = {
+                notes:'',
+                milestone:'',
+                dateMilestone: new Date(),
+                baby_id: $scope.baby._id
+            };
 
 
             $scope.milestones.push($scope.milestoneObject);

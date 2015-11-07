@@ -48,6 +48,17 @@ app.factory('apiServerRequests', function ($http) {
         return $http.put('api/GrowthRecords/growthRecords/' + growthRecord._id, growthRecord);
     };
 
+    /* DEVELOPMENT RECORDS*/
+    factory.loadMilestones = function(babyId){
+        return $http.get('api/DevelopmentRecords/babyDevelopmentRecords/' +babyId);
+    };
+
+    factory.uploadMilestone = function(milestone){
+      return $http.post('api/DevelopmentRecords/developmentRecords', milestone);
+    };
+    factory.updateMilestone = function(milestone){
+        return $http.put('api/DevelopmentRecords/developmentRecords/' + milestone._id, milestone);
+    };
      return factory;
 
 });
