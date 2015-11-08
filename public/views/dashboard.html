@@ -15,14 +15,24 @@
         <!-- weight and height tables-->
 
             <div class="row"> <!-- charts-->
-                <div class="col-md-6">
-                    <div class="col-md-6 text-center"> <h3>Weight</h3> </div>
-                    <nvd3 options="options" data="weightData[$index]"></nvd3>
+                <div class="col-md-4">
+                    <div class="text-center"> <h3>Weight</h3> </div>
+                    <nvd3 options="optionsLineChart" data="weightData[$index]"></nvd3>
                 </div> <!-- weight chart end-->
-                <div class="col-md-6">
-                    <div class="col-md-6 text-center"> <h3>Height</h3> </div>
-                    <nvd3 options="options" data="heightData[$index]"></nvd3>
+                <div class="col-md-4">
+                    <div class="text-center"> <h3>Height</h3> </div>
+                    <nvd3 options="optionsLineChart" data="heightData[$index]"></nvd3>
                 </div> <!-- height chart end -->
+                <div class="col-md-4">
+                    <div class="text-center"> <h3>Head circumference</h3> </div>
+                    <nvd3 options="optionsLineChart" data="head_cfrData[$index]"></nvd3>
+                </div><!-- end of head circumference chart-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center"> <h3>Percentiles</h3> </div>
+                        <nvd3 options="optionsMultiBarChart" data="percentilesData[$index]" showControls="false"></nvd3>
+                    </div> <!-- end of percentiles chart-->
+                </div> <!-- end of row for percentiles chart-->
             </div> <!-- end of charts-->
         </div> <!-- end of weight and height table-->
 

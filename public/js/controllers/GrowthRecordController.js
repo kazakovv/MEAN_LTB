@@ -38,46 +38,28 @@ app.controller('GrowthRecordController',['$scope', '$state','passObject', 'growt
 
         };
 
-        $scope.calculatePercentile = function(record,percentileToCalculate){
-            //check if this is a new row and exit if yes
+        $scope.calculatePercentile = function(record,percentileToCalculate) {
+            //check if this is a new row with no data entered and exit if yes
             if(! record.dateGrowth) {
                 return;
             }
-            var birthDate = new Date($scope.baby.birthdate);
-            var dateEntered = new Date(record.dateGrowth);
-            var day = 1000 * 3600 * 24;
-            var differenceInDays = Math.round( ( dateEntered.getTime() - birthDate.getTime() )/day );
-            var monthsSinceBirth = differenceInDays/30.5;
-            var percentile;
-            //return percentile based on boy/girl and weight, height or head circumference
 
-            var babySex = babyObject.boy_girl; //1 male, 2 female
+            //get the value of the growth record we are calculating the percentile for,. i.e. the height, length, or head cfr
+            var valueGrowthRecord;
             switch (percentileToCalculate){
                 case "Weight":
-                    if(babySex == 1){
-                        percentile = growthTables.percentileBoysWeight(monthsSinceBirth, record.weight);
-                    } else {
-                        percentile = growthTables.percentileGirlsWeight(monthsSinceBirth, record.weight);
-                    }
-                    return percentile;
+                    valueGrowthRecord = record.weight;
                     break;
                 case "Height":
-                    if(babySex == 1){
-                        percentile = growthTables.percentileBoysHeight(monthsSinceBirth, record.height);
-                    } else {
-                        percentile = growthTables.percentileGirlsHeight(monthsSinceBirth, record.height);
-                    }
-                    return percentile;
+                    valueGrowthRecord = record.height;
                     break;
                 case "HeadCircumference":
-                    if(babySex == 1){
-                        percentile = growthTables.percentileBoysHeadCircumference(monthsSinceBirth, record.head_cfr);
-                    } else {
-                        percentile = growthTables.percentileGirlsHeadCircumference(monthsSinceBirth, record.head_cfr);
-                    }
-                    return percentile;
+                    valueGrowthRecord = record.head_cfr;
                     break;
-            }//end of switch statement to calculate the respective percentile
+            }
+            return growthTables.calculatePercentile(record.dateGrowth, $scope.baby.birthdate,valueGrowthRecord,
+                percentileToCalculate, $scope.baby.boy_girl );
+
 
         };
 

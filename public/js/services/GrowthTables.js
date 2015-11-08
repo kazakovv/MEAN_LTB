@@ -128,10 +128,60 @@ app.factory('growthTables', ['growthTablesData','MathFunctions', function(growth
         return calculatePercentile(headCircumference, M, S, L);
 
     }//end of girls height percentile function
+    function calculatePercentileFunction(dateGrowthRecord, babyBirthday, valueGrowthRecord, percentileToCalculate, boy_girl){
+        //check for empty inputs
+        if(!dateGrowthRecord || ! percentileToCalculate || ! babyBirthday || ! valueGrowthRecord || ! boy_girl ){
+            return;
+        }
 
+        babyBirthday = new Date(babyBirthday);
+        dateGrowthRecord = new Date(dateGrowthRecord);
+        var day = 1000 * 3600 * 24;
+        var differenceInDays = Math.round( ( dateGrowthRecord.getTime() - babyBirthday.getTime() )/day );
+        var monthsSinceBirth = differenceInDays/30.5;
+        var percentile;
+        //return percentile based on boy/girl and weight, height or head circumference
+
+         //boy_gil variable : 1 male, 2 female
+        switch (percentileToCalculate){
+            case "Weight":
+                if(boy_girl == 1){
+                    percentile = boysWeightPercentile(monthsSinceBirth, valueGrowthRecord);
+                } else {
+                    percentile = girlsWeightPercentile(monthsSinceBirth, valueGrowthRecord);
+                }
+                return percentile;
+                break;
+            case "Height":
+                if(boy_girl == 1){
+                    percentile = boysHeightPercentile(monthsSinceBirth, valueGrowthRecord);
+                } else {
+                    percentile = girlsHeightPercentile(monthsSinceBirth, valueGrowthRecord);
+                }
+                return percentile;
+                break;
+            case "HeadCircumference":
+                if(boy_girl == 1){
+                    percentile = boysHeadCircumferencePercentile(monthsSinceBirth, valueGrowthRecord);
+                } else {
+                    percentile = girlsHeadCircumferencePercentile(monthsSinceBirth, valueGrowthRecord);
+                }
+                return percentile;
+                break;
+        }//end of switch statement to calculate the respective percentile
+
+
+    }//end of calculate percentile function
     /*** exposed return functions ****/
 
     return{
+        calculatePercentile: function(dateGrowthRecord, babyBirthday, valueGrowthRecord, percentileToCalculate, boy_girl){
+            var percentile = calculatePercentileFunction(dateGrowthRecord, babyBirthday,
+                valueGrowthRecord, percentileToCalculate, boy_girl);
+            return percentile;
+        },
+
+        /* todo These are not needed and could be deleted */
         percentileBoysWeight: function(month, Weight){
             var percentile = boysWeightPercentile(month,Weight);
             return percentile;
