@@ -117,6 +117,7 @@
                       onbeforesave="checkLength($data)"
                       onbeforesave="checkCfr($data)"
                       onaftersave="sortGrowthArray()"
+                      onaftersave="saveGrowthRecord($index)"
                       novalidate>
 
                     <button type="submit" ng-disabled="enterProgressForm.$waiting" class="btn btn-primary">

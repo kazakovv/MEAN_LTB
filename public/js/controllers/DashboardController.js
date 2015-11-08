@@ -1,162 +1,89 @@
-app.controller('DashboardController',['$scope', '$state', function($scope, $state) {
+app.controller('DashboardController', ['$scope', '$state', 'passObject', 'apiServerRequests',
+    function($scope, $state, passObject, apiServerRequests) {
 
-    $scope.init = function () {
-
-        //find kids of current user
-
-
-        if(Backendless.UserService.getCurrentUser() != null) {
-            currentUser = Backendless.UserService.getCurrentUser();
-            $scope.kids = currentUser.kids;
-
+        var getGrowthDataAndCreateArraysForCharts = function(kids){
+            //this function downloads the data and puts it into the format that nvd3 needs for displaying the charts
 
             /* alternative approach of getting weights and heights */
             $scope.weightData =[];
             $scope.heightData = [];
-            var heightsArray = [];
-            var weightsArray = [];
-            for (var i=0; i < currentUser.kids.length; i++) {
 
+            for (var i=0; i < kids.length; i++) {
+                var kid = kids[i];
 
-                var growthRecordsArray = currentUser.kids[i].growthRecords;
-                //split the values in the growht records array into separate arrays for weight, lenght and head circumference
-                for(k=0; k < growthRecordsArray.length; k++){
-                    var weightToPush = {
-                        date: new Date(growthRecordsArray[k].dateGrowth),
-                        value: growthRecordsArray[k].weight
-                    };
+                apiServerRequests.getGrowthRecordsForBaby(kid._id)
+                    .success(function(growthRecords){
+                        var heightsArray = [];
+                        var weightsArray = [];
 
-                    weightsArray.push(weightToPush);
+                        for(var k=0; k < growthRecords.length; k++){
+                            var weightToPush = {
+                                date: new Date(growthRecords[k].dateGrowth),
+                                value: growthRecords[k].weight
+                            };
+                            weightsArray.push(weightToPush);
 
-                    var heightToPush = {
-                        date: new Date(growthRecordsArray[k].dateGrowth),
-                        value: growthRecordsArray[k].height
-                    };
-                    heightsArray.push(heightToPush);
-                }//end of for loop to split the growth records array into separate arrays
-                weightsArray.sort(custom_sort);
-                heightsArray.sort(custom_sort);
+                            var heightToPush = {
+                                date: new Date(growthRecords[k].dateGrowth),
+                                value: growthRecords[k].height
+                            };
+                            heightsArray.push(heightToPush);
 
-                var minWeightsArray = {
-                    "key": "min Healthy Weight",
-                    "bar": true,
-                    "values": []
-                };
-                var maxWeightsArray = {
-                    "key": "max Healthy Weight",
-                    "bar": true,
-                    "values": []
-                };
-
-                var minHeightsArray ={
-                    "key": "min Healthy Height",
-                    "bar": true,
-                    "values": []
-                };
-                var maxHeightsArray = {
-                    "key": "max Healthy Height",
-                    "bar": true,
-                    "values": []
-                };
-                //set the min and max values for each data point
-
-                for(j=0; j < growthRecordsArray.length; j++){
-
-                    var dateBorn = new Date(currentUser.kids[i].birthdate);
-                    var dateWeight = new Date( growthRecordsArray[j].dateGrowth );
-                    var months = returnNumberOfMonthsBetweenTwoDates(dateBorn,dateWeight);
-
-                    var minWeight;
-                    var maxWeight;
-                    var minHeight;
-                    var maxHeight;
-                    //set min and max values for boy and girl
-                    if(currentUser.kids[i].sex==1){
-                       //boy
-                        minWeight = boyMinWeight(months);
-                        maxWeight = boyMaxWeight(months);
-                        minHeight = boyMinHeight(months);
-                        maxHeight = boyMaxHeight(months);
-
-                    } else {
-                        //girl
-                        minWeight = girlMinWeight(months);
-                        maxWeight = girlMaxWeight(months);
-                        minHeight = girlMinHeight(months);
-                        maxHeight = girlMaxHeight(months);
-                    }
-
-                    //push min and max weight values
-                    var minWeightValueToPush = {
-
-                            "date": new Date(dateWeight),
-                            "value": minWeight
-                        };
-
-                    minWeightsArray.values.push(minWeightValueToPush);
-
-                    var maxWeightValueToPush = {
-                        "date": new Date(dateWeight),
-                        "value": maxWeight
-                    };
-                    maxWeightsArray.values.push(maxWeightValueToPush);
-
-                    //push min and max height values
-
-                    var minHeightValueToPush = {
-
-                        "date": new Date(dateWeight),
-                        "value": minHeight
-                    };
-
-                    minHeightsArray.values.push(minHeightValueToPush);
-
-                    var maxHeightValueToPush = {
-                        "date": new Date(dateWeight),
-                        "value": maxHeight
-                    };
-                    maxHeightsArray.values.push(maxHeightValueToPush);
+                            weightsArray.sort(custom_sort);
+                            heightsArray.sort(custom_sort);
 
 
 
-                }//end of loop to set min and max weights  and heights values
+                        }//end of for loop for going through the downloaded growth records
 
-                weightsArray.sort(custom_sort);
-                var weightDataWithMinAndMaxValues = [
+                        //build the arrays needed to display the graph
+                        $scope.weightData.push([
+                            {
+                                "key" : "Height" ,
+                                "bar": true,
+                                "values" : weightsArray
+                            }]);
 
-                    {
-                        "key" : "Weight",
-                        "bar": true,
-                        "values" : weightsArray
-                    }, maxWeightsArray, minWeightsArray
-                ];
+                        $scope.heightData.push ([
+                            {
+                                "key" : "Weight",
+                                "bar" : true,
+                                "values" : heightsArray
+                            }]);
 
-                //link the array to scope
-                //weightData.sort(custom_sort);
-                $scope.weightData.push(weightDataWithMinAndMaxValues);
+                    })//end of success callback
+                    .error(function(err){
+                       console.log('Error downloading growth record for ' + kid.name + ' err: ' +err);
+                    });//end of query to download growth records
 
-                //sort the array before we link it to the scope
-                //var heightsArray = JSON.parse(currentUser.kids[i].height);
-                //heightsArray.sort(custom_sort);
-
-                var heightDataWithMinAndMaxValues = [
-                    {
-                        "key" : "Height" ,
-                        "bar": true,
-                        "values" : heightsArray
-                    }, maxHeightsArray, minHeightsArray
-                ];
-                $scope.heightData.push(heightDataWithMinAndMaxValues);
 
 
             } //end of for loop to go through all kids
+        }; //end of function for getting the data for the kids
+
+
+    $scope.init = function () {
+
+        //find kids of current user
+        if(passObject.getCurrentUser() != null) {
+            $scope.currentUser = passObject.getCurrentUser();
+            //get kids for user from database
+            apiServerRequests.getKidsForParent($scope.currentUser._id)
+                .success(function(kids){
+                    $scope.kids = kids;
+                    getGrowthDataAndCreateArraysForCharts(kids);
+                })
+                .error(function(err){
+                    console.log('error getting kids for current user '+err);
+                });//end of query to get kids of a parent
+
         } else {
             //redirect to login screen
             $state.go('login');
         }
 
 
-    };
+    }; //end of init function
 
     //the graph
     $scope.options = {
@@ -204,104 +131,13 @@ app.controller('DashboardController',['$scope', '$state', function($scope, $stat
             var monthsPassed = daysPassed/30.5;
             return monthsPassed;
         };
-    $scope.returnMinAndMaxValues = function(kid, property){
-        /*
-        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
 
-        var birthdate = new Date(kid.birthdate);
-        var today = new Date();
-        var daysPassed = Math.round(Math.abs((birthdate.getTime() - today.getTime())/(oneDay)));
-        var monthsSinceBirthday = Math.round (daysPassed/30.5);
-        */
-
-        var birthdate = new Date(kid.birthdate);
-        var today = new Date();
-        var monthsSinceBirthday = returnNumberOfMonthsBetweenTwoDates(birthdate, today);
-        var minWeight;
-        var maxWeight;
-
-        var minHeight;
-        var maxHeight;
-
-        var sex = kid.sex;
-        if(sex == 1){
-            //boy
-            switch (property){
-                case 'Weight':
-                    minWeight = boyMinWeight(monthsSinceBirthday);
-                    maxWeight = boyMaxWeight(monthsSinceBirthday);
-                case 'Height':
-                    minHeight = boyMinHeight(monthsSinceBirthday);
-                    maxHeight = boyMaxHeight(monthsSinceBirthday);
-            } //end of swith statement
-
-        } else if( sex == 2){
-            //girl
-            switch (property) {
-                case 'Weight':
-                    minWeight = girlMinWeight(monthsSinceBirthday);
-                    maxWeight = girlMaxWeight(monthsSinceBirthday);
-                case 'Height':
-                    minHeight = girlMinHeight(monthsSinceBirthday);
-                    maxHeight = girlMaxHeight(monthsSinceBirthday);
-            } //end of switch statement
-
-        } //end of else if for girl
-        if(property == 'Weight'){
-            return "The healthy range for this age is from " + Math.round(minWeight)  + " to " + Math.round(maxWeight) ;
-        } else {
-            return "The healthy range for this age is from " + Math.round(minHeight)  + " to " + Math.round(maxHeight) ;
-        }
-    }; //end of return min and max values function
     //sort the JSON array by date before we pass it on to graph chart
     function custom_sort(a, b) {
         return new Date(a.date) - new Date(b.date);
     }
 
 
-    /**********************************************************/
-    // min and max values for kids
-    /* height */
-    var boyMinHeight = function(months) {
-        var minHeight = -0.1208*(months^2) * 3.1865*months + 47.17;
-        return minHeight;
-    };
-
-    var boyMaxHeight = function(months){
-        var maxHeight = -0.142*(months^2) + 3.8167*months + 55.509;
-        return maxHeight;
-    };
-
-    var girlMinHeight = function(months){
-        var minHeight = -0.1027*(months^2) + 2.965*months + 46.59;
-        return minHeight;
-    };
-
-    var girlMaxHeight = function(months){
-        var maxHeight = -0.1263*(months^2) + 3.5332*months + 54.741;
-        return maxHeight;
-    };
-
-    /* weight */
-    var boyMinWeight = function(months){
-        var minWeight = -35.42*(months^2) + 851.24*months + 2359.7;
-        return minWeight;
-    };
-
-    var boyMaxWeight = function(months){
-        var maxWeight = -43.691*(months^2) + 1170.1*months + 4438.8;
-        return maxWeight;
-    };
-
-    var girlMinWeight = function(months){
-        var minWeight = -24.521*(months^2) + 689.71*months + 2341.6;
-        return minWeight;
-    };
-
-    var girlMaxWeight = function(months){
-        var maxWeight = -38.8*(months^2) + 1099*months + 4128.9;
-        return maxWeight;
-    };
 
 
 }]);
